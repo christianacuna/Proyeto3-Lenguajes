@@ -9,10 +9,14 @@ using namespace std;
 #define sz(c) ((int)c.size())
 #define zero(v) memset(v, 0, sizeof(v))
 
-#define TEST(a,b) ((a) & (1<<(b)))
+/////////////////////////////////
+// BORRAR LOS QUE NO SE OCUPEN //
+/////////////////////////////////
+
+//#define TEST(a,b) ((a) & (1<<(b)))
 #define SET(a,b)  ((a) | (1<<(b)))
-#define CLEAR(a,b) ((a) & ~(1<<(b)))
-#define FLIP(a,b) ((a) ^ (1<<(b)))
+//#define CLEAR(a,b) ((a) & ~(1<<(b)))
+//#define FLIP(a,b) ((a) ^ (1<<(b)))
 
 typedef pair<int,int> ii;
 const int MAXN=100000;
@@ -64,9 +68,11 @@ vector<ii> kruskal(vector<Ar> E, int fc){
     return r;
 }
 
-/*void imprimirLaberinto(vector<ii> aristas, int f, int c){
+void imprimirLaberinto(vector<ii> aristas, int f, int c){
     
     ii a;
+    int v;
+    printf("(%d,%d)\n", f,c);
     for (int i = 0; i < f*c; i++)
     {
         int msk = 0;
@@ -78,7 +84,7 @@ vector<ii> kruskal(vector<Ar> E, int fc){
 
             if (find(aristas.begin(), aristas.end(), a) != aristas.end())
             {
-                msk |= SET(bit,1);
+                msk |= SET(msk,1);
             }
         }
 
@@ -90,24 +96,29 @@ vector<ii> kruskal(vector<Ar> E, int fc){
 
             if (find(aristas.begin(), aristas.end(), a) != aristas.end())
             {
-                msk |= SET(bit,0);
+                msk |= SET(msk,0);
             }
         }
+
+        printf("%d", msk);
+
+        if (i%c==c-1)
+        {
+            printf("\n");
+        }
     }
-}*/
+}
 
-int main(){
+///////////////////
+// ARREGLAR PRIM //
+///////////////////
 
-    int f, c; //filas, columnas
-    int fc = f*c; //filas x columnas
-    char a; //algoritmo
-    scanf("%d %d %c", &f, &c, &a);
+void caminoPrim(int f, int c){
 
     int v, r; //vecino, random
     srand(time(NULL));
     vector<ii> G[f*c]; //representacion del grafo prim
-    vector<Ar> E; //vector de aristas kruskal
-    Ar Ar;
+
     for (int i = 0; i < f*c; i++)
     {
         if (i>c) //tiene Norte
@@ -118,16 +129,6 @@ int main(){
             {
                 G[i].push_back(make_pair(r,v));
                 G[v].push_back(make_pair(r,i));
-
-                Ar.a=i;
-                Ar.b=v;
-                Ar.w=r;
-                E.push_back(Ar);
-
-                Ar.a=v;
-                Ar.b=i;
-                Ar.w=r;
-                E.push_back(Ar);
             }
         }
 
@@ -139,16 +140,6 @@ int main(){
             {
                 G[i].push_back(make_pair(r,v));
                 G[v].push_back(make_pair(r,i));
-
-                Ar.a=i;
-                Ar.b=v;
-                Ar.w=r;
-                E.push_back(Ar);
-
-                Ar.a=v;
-                Ar.b=i;
-                Ar.w=r;
-                E.push_back(Ar);
             }
         }
 
@@ -160,16 +151,6 @@ int main(){
             {
                 G[i].push_back(make_pair(r,v));
                 G[v].push_back(make_pair(r,i));
-
-                Ar.a=i;
-                Ar.b=v;
-                Ar.w=r;
-                E.push_back(Ar);
-
-                Ar.a=v;
-                Ar.b=i;
-                Ar.w=r;
-                E.push_back(Ar);
             }
         }
 
@@ -181,16 +162,6 @@ int main(){
             {
                 G[i].push_back(make_pair(r,v));
                 G[v].push_back(make_pair(r,i));
-
-                Ar.a=i;
-                Ar.b=v;
-                Ar.w=r;
-                E.push_back(Ar);
-
-                Ar.a=v;
-                Ar.b=i;
-                Ar.w=r;
-                E.push_back(Ar);
             }
         }
     }
@@ -217,25 +188,121 @@ int main(){
            << ", Hacia: " << iter->second << endl;
    }*/
 
-   printf("\n");
-   vector<ii> k = kruskal(E, fc);
-   int s = k.size();
-   printf("%d\n", s);
+    //imprimirLaberinto(p,f,c);
+}
+
+////////////////////
+// REVISAR SALIDA //
+////////////////////
+
+void caminoKruskal(int f, int c){
+
+    int v, r; //vecino, random
+    srand(time(NULL));
+    vector<Ar> E; //vector de aristas kruskal
+    Ar Ar;
+
+    for (int i = 0; i < f*c; i++)
+    {
+        if (i>c) //tiene Norte
+        {
+            r = rand() % 100 + 1;
+            v = i-c;
+            if (i<v)
+            {
+                Ar.a=i;
+                Ar.b=v;
+                Ar.w=r;
+                E.push_back(Ar);
+
+                Ar.a=v;
+                Ar.b=i;
+                Ar.w=r;
+                E.push_back(Ar);
+            }
+        }
+
+        if (i/c<f-1) //tiene Sur
+        {
+            r = rand() % 100 + 1;
+            v = i+c;
+            if (i<v)
+            {
+                Ar.a=i;
+                Ar.b=v;
+                Ar.w=r;
+                E.push_back(Ar);
+
+                Ar.a=v;
+                Ar.b=i;
+                Ar.w=r;
+                E.push_back(Ar);
+            }
+        }
+
+        if (i%c!=c-1) //tiene Este
+        {
+            r = rand() % 100 + 1;
+            v = i+1;
+            if (i<v)
+            {
+                Ar.a=i;
+                Ar.b=v;
+                Ar.w=r;
+                E.push_back(Ar);
+
+                Ar.a=v;
+                Ar.b=i;
+                Ar.w=r;
+                E.push_back(Ar);
+            }
+        }
+
+        if (i%c!=0) //tiene Oeste
+        {
+            r = rand() % 100 + 1;
+            v = i-1;
+            if (i<v)
+            {
+                Ar.a=i;
+                Ar.b=v;
+                Ar.w=r;
+                E.push_back(Ar);
+
+                Ar.a=v;
+                Ar.b=i;
+                Ar.w=r;
+                E.push_back(Ar);
+            }
+        }
+    }
+
+   vector<ii> k = kruskal(E, f*c);
    printf("Kruskal\n");
    for (vector <pair<int,int> >::const_iterator iter = k.begin();
         iter != k.end();
         ++iter)
    {
-      cout << "Peso: "    << iter->first
+      cout << "Desde: "    << iter->first
            << ", Hacia: " << iter->second << endl;
    }
 
-    int bit = 0;
-    printf("%d\n", bit);
-    bit |= SET(bit,1);
-    printf("%d\n", bit);
-    bit |= SET(bit,0);
-    printf("%d\n", bit);
+    imprimirLaberinto(k,f,c);
+
+}
+
+int main(){
+
+    int f, c; //filas, columnas
+    char a; //algoritmo
+    scanf("%d %d %c", &f, &c, &a);
+
+    if (a == 'K')
+    {
+        caminoKruskal(f,c);
+    } else {
+        caminoPrim(f,c);
+    }
 
     return 0;
 }
