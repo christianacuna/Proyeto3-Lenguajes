@@ -1,6 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+#define NUM_THREADS 4
+
+int deepFirstSearch(void *laberinthInput){
+    return 0;
+}
+int breedthFirstSearch(void *laberinthInput){
+    return 0;
+}
+int randomSearch(void *laberinthInput){
+    return 0;
+}
+int aStarSearch(void *laberinthInput){
+    return 0;
+}
 
 int processInput(char laberinthInput[9999]){
     int dimentions[2];
@@ -50,6 +65,8 @@ int generatePositionMatrix(char laberinthInput[9999]){
 
 int main(int argc,char* argv[])
 {
+    int pid;
+    pthread_t threads[NUM_THREADS];
     char laberinth[9999];
     int a;
     int counter;
@@ -60,7 +77,6 @@ int main(int argc,char* argv[])
     printf("%s", laberinth);
     char *temp = &laberinth[1];
     int temp2 = atoi(temp);
-    //printf("\n%d", temp2);
     int processedInut = processInput(laberinth);
     printf("\nProgram Name Is: %s",argv[0]);
     if(argc==1)
@@ -72,5 +88,26 @@ int main(int argc,char* argv[])
         for(counter=0;counter<argc;counter++)
             printf("\nargv[%d]: %s",counter,argv[counter]);
     }
-    return 0;
+    int resultado1;
+    int resultado2;
+    int resultado3;
+    int resutlado4;
+    pid = pthread_create(&threads[0],NULL, deepFirstSearch,(void*)laberinth);
+    if(pid) {
+            printf("Error Creando DFS");
+    }
+    pid = pthread_create(&threads[1],NULL, breedthFirstSearch,(void *)laberinth);
+    if(pid) {
+            printf("Error Creando BFS");
+    }
+    pid = pthread_create(&threads[2],NULL, randomSearch,(void *)laberinth);
+    if(pid) {
+            printf("Error Creando DFS");
+    }
+    pid = pthread_create(&threads[3],NULL, aStarSearch,(void *)laberinth);
+    if(pid) {
+            printf("Error Creando A*");
+    }
+    pthread_exit(NULL);
+
 }
