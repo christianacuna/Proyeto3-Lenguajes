@@ -2,19 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <limits.h>
 #define NUM_THREADS 4
 
-int deepFirstSearch(void *laberinthInput){
-    return 0;
+struct Stack {
+    int top;
+    unsigned capacity;
+    int* array;
+};
+void deepFirstSearch(void *laberinthInput){
+
+    pthread_exit(NULL);
 }
-int breedthFirstSearch(void *laberinthInput){
-    return 0;
+void breedthFirstSearch(void *laberinthInput){
+    pthread_exit(NULL);
 }
-int randomSearch(void *laberinthInput){
-    return 0;
+void randomSearch(void *laberinthInput){
+    pthread_exit(NULL);
 }
-int aStarSearch(void *laberinthInput){
-    return 0;
+void aStarSearch(void *laberinthInput){
+    pthread_exit(NULL);
 }
 
 int processInput(char laberinthInput[9999]){
@@ -62,6 +69,47 @@ int generatePositionMatrix(char laberinthInput[9999]){
         positionMatrix[j][n] = n;
     }
 }
+struct Stack* createStack(unsigned capacity)
+{
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->capacity = capacity;
+    stack->top = -1;
+    stack->array = (int*)malloc(stack->capacity * sizeof(int));
+    return stack;
+}
+int isEmpty(struct Stack* stack)
+{
+    return stack->top == -1;
+}
+
+int isFull(struct Stack* stack)
+{
+    return stack->top == stack->capacity - 1;
+}
+
+void push(struct Stack* stack, int item)
+{
+    if (isFull(stack))
+        return;
+    stack->array[++stack->top] = item;
+}
+
+int pop(struct Stack* stack)
+{
+    if (isEmpty(stack))
+        return INT_MIN;
+    return stack->array[stack->top--];
+}
+
+int peek(struct Stack* stack)
+{
+    if (isEmpty(stack))
+        return INT_MIN;
+    return stack->array[stack->top];
+}
+
+void exitRoute(int route){
+}
 
 int main(int argc,char* argv[])
 {
@@ -78,16 +126,6 @@ int main(int argc,char* argv[])
     char *temp = &laberinth[1];
     int temp2 = atoi(temp);
     int processedInut = processInput(laberinth);
-    printf("\nProgram Name Is: %s",argv[0]);
-    if(argc==1)
-        printf("\nNo Extra Command Line Argument Passed Other Than Program Name");
-    if(argc>=2)
-    {
-        printf("\nNumber Of Arguments Passed: %d",argc);
-        printf("\n----Following Are The Command Line Arguments Passed----");
-        for(counter=0;counter<argc;counter++)
-            printf("\nargv[%d]: %s",counter,argv[counter]);
-    }
     int resultado1;
     int resultado2;
     int resultado3;
