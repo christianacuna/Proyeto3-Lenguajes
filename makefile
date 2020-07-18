@@ -9,7 +9,7 @@ compilar:
 		g++ -g -lm $(ARCHIVO).cpp -o $(ARCHIVO)
 
 ejecutar:
-		./$(ARCHIVO)
+		./$(ARCHIVO) > laberinto.txt
 
 # regla que sirva para poder borrar los archivos creados
 clean:
