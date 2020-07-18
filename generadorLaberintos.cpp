@@ -8,15 +8,8 @@ using namespace std;
 #define forall(it,v) for(typeof(v.begin()) it=v.begin();it!=v.end();++it)
 #define sz(c) ((int)c.size())
 #define zero(v) memset(v, 0, sizeof(v))
-
-/////////////////////////////////
-// BORRAR LOS QUE NO SE OCUPEN //
-/////////////////////////////////
-
-//#define TEST(a,b) ((a) & (1<<(b)))
+#define INF 0x3f3f3f3f 
 #define SET(a,b)  ((a) | (1<<(b)))
-//#define CLEAR(a,b) ((a) & ~(1<<(b)))
-//#define FLIP(a,b) ((a) ^ (1<<(b)))
 
 typedef pair<int,int> ii;
 const int MAXN=100000;
@@ -31,28 +24,48 @@ struct UnionFind{
         return con;
     }};
 
-bool taken[MAXN];
-priority_queue<ii, vector<ii>, greater<ii> > pq;//min heap
 struct Ar{int a,b,w;};
 bool operator<(const Ar& a, const Ar &b){return a.w<b.w;}
 
-void process(vector<ii> G[], int v){
-    taken[v]=true;
-    forall(e, G[v]){
-        if(!taken[e->second]) pq.push(*e);
-    }
-}
+vector<ii> prim(vector<pair<int,int> > G[], int fc) 
+{ 
+    priority_queue< ii, vector <ii> , greater<ii> > pq; 
+    int src = 0;
+    vector<int> key(fc, INF); 
+    vector<int> parent(fc, -1); 
+    vector<bool> inMST(fc, false); 
+    pq.push(make_pair(0, src)); 
+    key[src] = 0; 
 
-vector<ii> prim(vector<ii> G[]){ //HACER QUE DEVUELVA <NODO1, NODO2>
-    zero(taken);
-    process(G, 0);
+    while (!pq.empty()) 
+    { 
+        int u = pq.top().second; 
+        pq.pop(); 
+
+        inMST[u] = true;
+
+        for (auto x : G[u]) 
+        { 
+            int v = x.second; 
+            int weight = x.first; 
+
+            if (inMST[v] == false && key[v] > weight) 
+            { 
+                key[v] = weight; 
+                pq.push(make_pair(key[v], v)); 
+                parent[v] = u; 
+            } 
+        } 
+    } 
+
     vector<ii> r;
-    while(sz(pq)){
-        ii e=pq.top(); pq.pop();
-        if(!taken[e.second])r.push_back(make_pair(e.first, e.second)), process(G, e.second);
+    for (int i = 1; i < fc; ++i){
+        r.push_back(make_pair(parent[i], i));
+        printf("%d - %d\n", parent[i], i); 
     }
+
     return r;
-}
+} 
 
 vector<ii> kruskal(vector<Ar> E, int fc){
     vector<ii> r;
@@ -109,9 +122,9 @@ void imprimirLaberinto(vector<ii> aristas, int f, int c){
     }
 }
 
-///////////////////
-// ARREGLAR PRIM //
-///////////////////
+////////////////////
+// REVISAR SALIDA //
+////////////////////
 
 void caminoPrim(int f, int c){
 
@@ -166,29 +179,8 @@ void caminoPrim(int f, int c){
         }
     }
 
-    /*for(size_t idx = 0; idx < 20; ++idx)
-{
-   cout << "Nodo: " << idx << endl;
-   for (vector <pair<int,int> >::const_iterator iter = G[idx].begin();
-        iter != G[idx].end();
-        ++iter)
-   {
-      cout << "Peso: "    << iter->first
-           << ", Hacia: " << iter->second << endl;
-   }
-}
-
-    vector<ii> p = prim(G);
-    printf("Prim\n");
-    for (vector <pair<int,int> >::const_iterator iter = p.begin();
-        iter != p.end();
-        ++iter)
-   {
-      cout << "Peso: "    << iter->first
-           << ", Hacia: " << iter->second << endl;
-   }*/
-
-    //imprimirLaberinto(p,f,c);
+    vector<ii> p = prim(G, f*c);
+    imprimirLaberinto(p,f,c);
 }
 
 ////////////////////
@@ -278,7 +270,6 @@ void caminoKruskal(int f, int c){
     }
 
    vector<ii> k = kruskal(E, f*c);
-   printf("Kruskal\n");
    for (vector <pair<int,int> >::const_iterator iter = k.begin();
         iter != k.end();
         ++iter)
