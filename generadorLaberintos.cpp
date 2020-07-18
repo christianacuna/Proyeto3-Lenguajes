@@ -1,13 +1,6 @@
 #include <bits/stdc++.h>
-#include <iostream>
 using namespace std;
-#define dprint(v) cerr << #v"=" << v << endl //;)
-#define forr(i,a,b) for(int i=(a); i<(b); i++)
-#define forn(i,n) forr(i,0,n)
-#define dforsn(i,a,b) for(int i=(b)-1; i>=a; i--)
 #define forall(it,v) for(typeof(v.begin()) it=v.begin();it!=v.end();++it)
-#define sz(c) ((int)c.size())
-#define zero(v) memset(v, 0, sizeof(v))
 #define INF 0x3f3f3f3f 
 #define SET(a,b)  ((a) | (1<<(b)))
 
@@ -27,8 +20,7 @@ struct UnionFind{
 struct Ar{int a,b,w;};
 bool operator<(const Ar& a, const Ar &b){return a.w<b.w;}
 
-vector<ii> prim(vector<pair<int,int> > G[], int fc) 
-{ 
+vector<ii> prim(vector<pair<int,int> > G[], int fc){ 
     priority_queue< ii, vector <ii> , greater<ii> > pq; 
     int src = 0;
     vector<int> key(fc, INF); 
@@ -36,34 +28,23 @@ vector<ii> prim(vector<pair<int,int> > G[], int fc)
     vector<bool> inMST(fc, false); 
     pq.push(make_pair(0, src)); 
     key[src] = 0; 
-
-    while (!pq.empty()) 
-    { 
+    while (!pq.empty()) { 
         int u = pq.top().second; 
         pq.pop(); 
-
         inMST[u] = true;
-
-        for (auto x : G[u]) 
-        { 
+        for (auto x : G[u]){ 
             int v = x.second; 
             int weight = x.first; 
-
-            if (inMST[v] == false && key[v] > weight) 
-            { 
+            if (inMST[v] == false && key[v] > weight){ 
                 key[v] = weight; 
                 pq.push(make_pair(key[v], v)); 
                 parent[v] = u; 
             } 
         } 
-    } 
-
-    vector<ii> r;
-    for (int i = 1; i < fc; ++i){
-        r.push_back(make_pair(parent[i], i));
-        printf("%d - %d\n", parent[i], i); 
     }
-
+    vector<ii> r;
+    for (int i = 1; i < fc; ++i)
+        r.push_back(make_pair(parent[i], i));
     return r;
 } 
 
@@ -122,10 +103,6 @@ void imprimirLaberinto(vector<ii> aristas, int f, int c){
     }
 }
 
-////////////////////
-// REVISAR SALIDA //
-////////////////////
-
 void caminoPrim(int f, int c){
 
     int v, r; //vecino, random
@@ -182,10 +159,6 @@ void caminoPrim(int f, int c){
     vector<ii> p = prim(G, f*c);
     imprimirLaberinto(p,f,c);
 }
-
-////////////////////
-// REVISAR SALIDA //
-////////////////////
 
 void caminoKruskal(int f, int c){
 
@@ -269,15 +242,7 @@ void caminoKruskal(int f, int c){
         }
     }
 
-   vector<ii> k = kruskal(E, f*c);
-   for (vector <pair<int,int> >::const_iterator iter = k.begin();
-        iter != k.end();
-        ++iter)
-   {
-      cout << "Desde: "    << iter->first
-           << ", Hacia: " << iter->second << endl;
-   }
-
+    vector<ii> k = kruskal(E, f*c);
     imprimirLaberinto(k,f,c);
 
 }
